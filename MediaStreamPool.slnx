@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/MediaStreamPool.App/MediaStreamPool.App.csproj" />
+  <Project Path="src/MediaStreamPool.Presentation/MediaStreamPool.Presentation.csproj" />
+  <Project Path="src/MediaStreamPool.Domain/MediaStreamPool.Domain.csproj" />
+  <Project Path="src/MediaStreamPool.Infrastructure/MediaStreamPool.Infrastructure.csproj" />
+  <Project Path="tests/MediaStreamPool.Tests/MediaStreamPool.Tests.csproj" />
+</Solution>
