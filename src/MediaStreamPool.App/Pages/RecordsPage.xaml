@@ -1,0 +1,70 @@
+<Page
+    x:Class="MediaStreamPool.App.Pages.RecordsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Padding="24" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="TitleText" Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock Text="Indexed records from authorized sources" Opacity="0.7" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="SearchBox" PlaceholderText="Search URL, host, path or source..." TextChanged="SearchBox_TextChanged" />
+            <Button Grid.Column="1" Content="Refresh" Click="Refresh_Click" />
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" MinWidth="320" />
+            </Grid.ColumnDefinitions>
+
+            <Border Padding="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                <ListView x:Name="RecordsList" SelectionChanged="RecordsList_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="10" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Url}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding Host}" Opacity="0.65" FontSize="12" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding Format}" VerticalAlignment="Center" Opacity="0.75" />
+                                <TextBlock Grid.Column="2" Text="{Binding StatusCode}" VerticalAlignment="Center" Opacity="0.75" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Border>
+
+            <ScrollViewer Grid.Column="1">
+                <StackPanel x:Name="DetailsPanel" Spacing="10" Padding="16">
+                    <TextBlock Text="Details" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock x:Name="EmptyDetails" Text="Select a record to inspect its details." Opacity="0.65" TextWrapping="Wrap" />
+                    <StackPanel x:Name="RecordDetails" Visibility="Collapsed" Spacing="8">
+                        <TextBlock x:Name="DetailUrl" TextWrapping="Wrap" />
+                        <TextBlock x:Name="DetailSource" TextWrapping="Wrap" Opacity="0.75" />
+                        <TextBlock x:Name="DetailStatus" />
+                        <TextBlock x:Name="DetailContentType" Opacity="0.75" />
+                        <TextBlock x:Name="DetailPath" TextWrapping="Wrap" Opacity="0.75" />
+                        <Button Content="Copy URL" Click="CopyUrl_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>
