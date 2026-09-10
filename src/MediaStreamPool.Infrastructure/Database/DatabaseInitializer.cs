@@ -11,13 +11,16 @@ public sealed class DatabaseInitializer(string connectionString)
         await using var connection = new SqliteConnection(connectionString);
         await connection.OpenAsync(cancellationToken);
 
+        await using (var pragma = connection.CreateCommand())
+        {
+            pragma.CommandText = "PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL;";
+            await pragma.ExecuteNonQueryAsync(cancellationToken);
+        }
+
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
         await using var command = connection.CreateCommand();
         command.Transaction = (SqliteTransaction)transaction;
-        command.CommandText = """
-            PRAGMA foreign_keys = ON;
-            PRAGMA journal_mode = WAL;
-
+        command.CommandText = $"""
             CREATE TABLE IF NOT EXISTS SchemaMigrations (
                 Version INTEGER NOT NULL PRIMARY KEY
             );
@@ -77,7 +80,7 @@ public sealed class DatabaseInitializer(string connectionString)
             CREATE INDEX IF NOT EXISTS IX_ScanRuns_StartedAt ON ScanRuns(StartedAt DESC);
             CREATE INDEX IF NOT EXISTS IX_DecodedPayloads_CreatedAt ON DecodedPayloads(CreatedAt DESC);
 
-            INSERT OR IGNORE INTO SchemaMigrations (Version) VALUES (1);
+            INSERT OR IGNORE INTO SchemaMigrations (Version) VALUES ({InitialSchemaVersion});
             """;
         await command.ExecuteNonQueryAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
