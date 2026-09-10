@@ -7,7 +7,7 @@ namespace MediaStreamPool.Presentation.ViewModels;
 
 public partial class MainViewModel(
     IRecordRepository records,
-    IDecodedPayloadRepository decodedPayloads,
+    IDecodedPayloadRepository decodedPayloadRepository,
     IScanRunRepository scanRuns) : ObservableObject
 {
     public ObservableCollection<ScanRun> RecentScans { get; } = [];
@@ -24,7 +24,7 @@ public partial class MainViewModel(
         TotalRecords = await records.CountAsync(cancellationToken: cancellationToken);
         Streams = await records.CountAsync(RecordKind.Stream, cancellationToken);
         Apis = await records.CountAsync(RecordKind.Api, cancellationToken);
-        DecodedPayloads = await decodedPayloads.CountAsync(cancellationToken);
+        DecodedPayloads = await decodedPayloadRepository.CountAsync(cancellationToken);
 
         var recent = await scanRuns.GetRecentAsync(8, cancellationToken);
         RecentScans.Clear();
