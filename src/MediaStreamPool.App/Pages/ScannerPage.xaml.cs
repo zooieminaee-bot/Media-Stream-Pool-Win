@@ -7,13 +7,13 @@ namespace MediaStreamPool.App.Pages;
 
 public sealed partial class ScannerPage : Page
 {
-    private readonly IScanner _scanner;
+    private readonly IScanOrchestrator _scanner;
     private CancellationTokenSource? _scanCancellation;
 
     public ScannerPage()
     {
         InitializeComponent();
-        _scanner = App.Services.GetRequiredService<IScanner>();
+        _scanner = App.Services.GetRequiredService<IScanOrchestrator>();
     }
 
     private async void ScanButton_Click(object sender, RoutedEventArgs e)
@@ -46,15 +46,19 @@ public sealed partial class ScannerPage : Page
 
         try
         {
-            var result = await _scanner.ScanAsync(source, progress, _scanCancellation.Token);
+            var result = await _scanner.RunAsync(source, progress, _scanCancellation.Token);
             ResultSummary.Text = result.Success
-                ? $"Scan completed. Found {result.Records.Count} unique records and {result.DecodedPayloads.Count} decoded payload(s)."
+                ? $"Scan completed. Persisted {result.Records.Count} unique records and {result.DecodedPayloads.Count} decoded payload(s)."
                 : $"Scan failed: {result.Error}";
             ShowStatus(result.Success ? "Scan completed" : "Scan failed", result.Success ? InfoBarSeverity.Success : InfoBarSeverity.Error);
         }
         catch (OperationCanceledException)
         {
             ShowStatus("Scan cancelled.", InfoBarSeverity.Warning);
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"Unexpected scanner error: {ex.Message}", InfoBarSeverity.Error);
         }
         finally
         {
