@@ -1,0 +1,11 @@
+<Page
+    x:Class="MediaStreamPool.App.Pages.PlaceholderPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Padding="32">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" MaxWidth="600">
+            <TextBlock x:Name="TitleText" Text="Section" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center" />
+            <TextBlock Text="This section is intentionally not populated with fake data. Its production implementation will be added to the corresponding feature milestone." TextAlignment="Center" TextWrapping="Wrap" Opacity="0.7" />
+        </StackPanel>
+    </Grid>
+</Page>
