@@ -4,7 +4,7 @@ namespace MediaStreamPool.Infrastructure.Scanner;
 
 public static partial class UrlExtractor
 {
-    [GeneratedRegex(@"(?:(?:https?|rtmp)://|rtmp://)[^\s\"'<>]+", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+    [GeneratedRegex(@"(?:https?|rtmp)://[^\s\""'<>]+", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
     private static partial Regex UrlRegex();
 
     public static IReadOnlyList<Uri> Extract(string text)
