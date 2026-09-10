@@ -15,6 +15,11 @@ public interface IScanRunRepository
     Task<IReadOnlyList<ScanRun>> GetRecentAsync(int limit = 20, CancellationToken cancellationToken = default);
 }
 
+public interface IDecodedPayloadRepository
+{
+    Task AddAsync(DecodedPayload payload, CancellationToken cancellationToken = default);
+}
+
 public interface IDecoder
 {
     Task<DecodeResult> DecodeAsync(ReadOnlyMemory<byte> payload, CancellationToken cancellationToken = default);
@@ -29,6 +34,11 @@ public sealed record DecodeResult(bool Success, string? Content, string? Error, 
 public interface IScanner
 {
     Task<ScanResult> ScanAsync(Uri source, IProgress<ScanProgress>? progress = null, CancellationToken cancellationToken = default);
+}
+
+public interface IScanOrchestrator
+{
+    Task<ScanResult> RunAsync(Uri source, IProgress<ScanProgress>? progress = null, CancellationToken cancellationToken = default);
 }
 
 public sealed record ScanProgress(string Stage, double Percentage, string? Message = null);
