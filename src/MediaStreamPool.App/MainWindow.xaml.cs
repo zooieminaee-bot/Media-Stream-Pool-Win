@@ -35,6 +35,7 @@ public sealed partial class MainWindow : Window
             "Dashboard" => typeof(DashboardPage),
             "Streams" => typeof(RecordsPage),
             "Apis" => typeof(RecordsPage),
+            "Decoded" => typeof(DecodedPayloadsPage),
             "Scanner" => typeof(ScannerPage),
             _ => typeof(PlaceholderPage)
         };
