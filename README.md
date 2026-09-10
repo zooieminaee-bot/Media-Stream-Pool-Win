@@ -1,43 +1,73 @@
 # Media Stream Pool Win
 
-Windows-oriented local source indexer for authorized media APIs and stream endpoints.
+Native Windows desktop application for indexing and analyzing media endpoints and authorized API payloads.
 
-## Current MVP
+## Technology
 
-- Go core with no external runtime dependency.
-- Base64 → AES-256-CBC → PKCS7 → GZIP decoder when `MEDIA_POOL_AES_KEY_HEX` and `MEDIA_POOL_AES_IV_HEX` are supplied.
-- URL discovery from decoded/plain payloads.
-- Classification for API, HLS, DASH, M3U, RTMP and HTTP stream candidates.
-- Local persistent JSON database (SQLite migration is next).
-- Live search and type filtering.
-- Detail drawer with source, status, format, host, path and decoded payload.
-- Local HTTP UI on `127.0.0.1:8765`.
+- C# / .NET 10
+- WinUI 3 / Windows App SDK 2.4.0
+- MVVM with CommunityToolkit.Mvvm
+- Microsoft.Extensions.DependencyInjection
+- HttpClient
+- SQLite via Microsoft.Data.Sqlite
+- xUnit
 
-## Run
+Microsoft lists Windows App SDK 2.4.0 as the current stable release as of August 13, 2026. The application targets Windows 10 build 17763 or later and Windows 11. See Microsoft's support/versioning documentation for the current platform matrix.
 
-```powershell
-go run ./cmd/mediapool
+## Architecture
+
+```text
+MediaStreamPool
+├── src/MediaStreamPool.App
+│   ├── WinUI shell
+│   ├── MainWindow
+│   └── Pages
+├── src/MediaStreamPool.Presentation
+│   └── ViewModels
+├── src/MediaStreamPool.Domain
+│   ├── Models
+│   └── Interfaces
+├── src/MediaStreamPool.Infrastructure
+│   ├── Database
+│   ├── Repositories
+│   ├── Decoder
+│   ├── Scanner
+│   └── DependencyInjection
+└── tests/MediaStreamPool.Tests
 ```
 
-Open `http://127.0.0.1:8765`.
+## Current implementation
+
+- Native WinUI 3 shell. No browser or localhost UI is required.
+- Dashboard with real SQLite counts.
+- Scanner page with real HTTP fetch, progress reporting, payload analysis, URL extraction, classification and deduplication.
+- Authorized Base64 → AES-256-CBC → PKCS7 → GZIP → UTF-8 decoding.
+- AES key and IV are read from environment variables and are not hard-coded.
+- SQLite database under the user's local application data directory.
+- Repository abstraction for persisted records.
+- xUnit coverage for URL extraction, classification and decoder configuration.
+- Honest empty states for unfinished UI sections instead of fake records.
+- Windows CI workflow for restore, build and test.
 
 ## Decoder configuration
 
-For authorized data, configure the transport key and IV as environment variables instead of committing secrets:
+For authorized data, configure the transport key and IV in the process environment:
 
 ```powershell
 $env:MEDIA_POOL_AES_KEY_HEX="<64 hex characters>"
 $env:MEDIA_POOL_AES_IV_HEX="<32 hex characters>"
-go run ./cmd/mediapool
 ```
 
-The application only indexes endpoints accessible to the user and does not attempt to bypass DRM, authentication or access controls.
+The application does not bypass DRM, authentication, access controls or service restrictions.
 
-## Roadmap
+## Build
 
-1. SQLite storage + FTS search.
-2. GitHub repository crawler for source files.
-3. Recursive JSON/M3U/HTML extraction.
-4. Browser worker using Playwright for authorized JS-backed pages.
-5. Windows desktop shell (WebView2/Tauri or Wails) and installer.
-6. Endpoint health checks, tags, favorites and export.
+Requires the .NET 10 SDK and a Windows development environment with the Windows SDK/WinUI tooling required by Windows App SDK.
+
+```powershell
+dotnet restore MediaStreamPool.slnx
+dotnet build MediaStreamPool.slnx --configuration Release
+dotnet test MediaStreamPool.slnx --configuration Release
+```
+
+The repository is being developed incrementally. Installer packaging, complete migrations/FTS search, the remaining data-management pages, health checks, export and release hardening are not yet claimed as complete until implemented and verified.
