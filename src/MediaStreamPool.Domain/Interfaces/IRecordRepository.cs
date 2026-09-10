@@ -18,6 +18,8 @@ public interface IScanRunRepository
 public interface IDecodedPayloadRepository
 {
     Task AddAsync(DecodedPayload payload, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<DecodedPayload>> SearchAsync(string? query = null, CancellationToken cancellationToken = default);
+    Task<int> CountAsync(CancellationToken cancellationToken = default);
 }
 
 public interface IDecoder
