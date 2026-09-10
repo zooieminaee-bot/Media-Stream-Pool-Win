@@ -22,19 +22,35 @@ public sealed partial class RecordsPage : Page
     protected override async void OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        var kind = e.Parameter?.ToString() == "Apis" ? RecordKind.Api : RecordKind.Stream;
-        TitleText.Text = kind == RecordKind.Api ? "APIs" : "Streams";
-        await _viewModel.LoadAsync(kind);
-        RecordsList.ItemsSource = _viewModel.Items;
+        try
+        {
+            var kind = e.Parameter?.ToString() == "Apis" ? RecordKind.Api : RecordKind.Stream;
+            TitleText.Text = kind == RecordKind.Api ? "APIs" : "Streams";
+            await _viewModel.LoadAsync(kind);
+            RecordsList.ItemsSource = _viewModel.Items;
+        }
+        catch (Exception ex)
+        {
+            _viewModel.Status = $"Load failed: {ex.Message}";
+        }
     }
 
-    private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         _viewModel.SearchText = SearchBox.Text;
-        await _viewModel.RefreshAsync();
     }
 
-    private async void Refresh_Click(object sender, RoutedEventArgs e) => await _viewModel.RefreshAsync();
+    private async void Refresh_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await _viewModel.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            _viewModel.Status = $"Refresh failed: {ex.Message}";
+        }
+    }
 
     private void RecordsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
