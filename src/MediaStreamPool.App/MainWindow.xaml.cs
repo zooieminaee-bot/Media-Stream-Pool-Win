@@ -33,6 +33,8 @@ public sealed partial class MainWindow : Window
         var page = tag switch
         {
             "Dashboard" => typeof(DashboardPage),
+            "Streams" => typeof(RecordsPage),
+            "Apis" => typeof(RecordsPage),
             "Scanner" => typeof(ScannerPage),
             _ => typeof(PlaceholderPage)
         };
