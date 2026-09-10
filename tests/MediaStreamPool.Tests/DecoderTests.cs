@@ -1,5 +1,6 @@
 using System.Text;
 using MediaStreamPool.Infrastructure.Decoder;
+using Xunit;
 
 namespace MediaStreamPool.Tests;
 
