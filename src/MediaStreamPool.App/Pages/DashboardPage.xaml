@@ -1,0 +1,30 @@
+<Page
+    x:Class="MediaStreamPool.App.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer Padding="32">
+        <StackPanel Spacing="24" MaxWidth="1200">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Dashboard" Style="{StaticResource TitleTextBlockStyle}" />
+                <TextBlock Text="Local index status and scan statistics" Opacity="0.7" />
+            </StackPanel>
+            <Grid ColumnSpacing="16" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Padding="20" CornerRadius="12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <StackPanel Spacing="8"><TextBlock Text="Total Records" /><TextBlock Text="{Binding TotalRecords}" FontSize="30" FontWeight="SemiBold" /></StackPanel>
+                </Border>
+                <Border Grid.Column="1" Padding="20" CornerRadius="12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <StackPanel Spacing="8"><TextBlock Text="Streams" /><TextBlock Text="{Binding Streams}" FontSize="30" FontWeight="SemiBold" /></StackPanel>
+                </Border>
+                <Border Grid.Column="2" Padding="20" CornerRadius="12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <StackPanel Spacing="8"><TextBlock Text="APIs" /><TextBlock Text="{Binding Apis}" FontSize="30" FontWeight="SemiBold" /></StackPanel>
+                </Border>
+            </Grid>
+            <InfoBar IsOpen="True" Severity="Informational" Title="Scanner status" Message="{Binding Status}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
