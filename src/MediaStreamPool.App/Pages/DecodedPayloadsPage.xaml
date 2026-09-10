@@ -7,6 +7,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Spacing="4">
             <TextBlock Text="Decoded Payloads" Style="{StaticResource TitleTextBlockStyle}" />
@@ -55,6 +56,6 @@
                 </Grid>
             </Border>
         </Grid>
-        <InfoBar Grid.Row="2" x:Name="StatusBar" IsOpen="False" VerticalAlignment="Bottom" Margin="0,0,0,8" />
+        <InfoBar Grid.Row="3" x:Name="StatusBar" IsOpen="False" VerticalAlignment="Center" />
     </Grid>
 </Page>
