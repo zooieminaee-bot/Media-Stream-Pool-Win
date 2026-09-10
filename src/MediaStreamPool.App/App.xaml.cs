@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using MediaStreamPool.Infrastructure.Database;
 using MediaStreamPool.Infrastructure.DependencyInjection;
 using MediaStreamPool.Presentation.ViewModels;
 
@@ -17,7 +18,14 @@ public partial class App : Application
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        _ = LaunchAsync();
+    }
+
+    private async Task LaunchAsync()
+    {
         var window = Services.GetRequiredService<MainWindow>();
+        var database = Services.GetRequiredService<DatabaseInitializer>();
+        await window.InitializeAsync(database);
         window.Activate();
     }
 
