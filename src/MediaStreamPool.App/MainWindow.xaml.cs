@@ -30,15 +30,27 @@ public sealed partial class MainWindow : Window
         if (args.SelectedItem is not NavigationViewItem item || item.Tag is not string tag)
             return;
 
-        var page = tag switch
+        switch (tag)
         {
-            "Dashboard" => typeof(DashboardPage),
-            "Streams" => typeof(RecordsPage),
-            "Apis" => typeof(RecordsPage),
-            "Decoded" => typeof(DecodedPayloadsPage),
-            "Scanner" => typeof(ScannerPage),
-            _ => typeof(PlaceholderPage)
-        };
-        ContentFrame.Navigate(page, tag);
+            case "Dashboard":
+                ContentFrame.Navigate(typeof(DashboardPage), _viewModel);
+                break;
+            case "Streams":
+            case "Apis":
+                ContentFrame.Navigate(typeof(RecordsPage), tag);
+                break;
+            case "Decoded":
+                ContentFrame.Navigate(typeof(DecodedPayloadsPage));
+                break;
+            case "Scanner":
+                ContentFrame.Navigate(typeof(ScannerPage));
+                break;
+            case "Settings":
+                ContentFrame.Navigate(typeof(SettingsPage));
+                break;
+            case "About":
+                ContentFrame.Navigate(typeof(AboutPage));
+                break;
+        }
     }
 }
