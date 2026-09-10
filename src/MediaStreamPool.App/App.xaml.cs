@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using MediaStreamPool.App.Services;
 using MediaStreamPool.Infrastructure.DependencyInjection;
 using MediaStreamPool.Presentation.ViewModels;
 
