@@ -1,5 +1,6 @@
 using MediaStreamPool.Domain.Models;
 using MediaStreamPool.Infrastructure.Scanner;
+using Xunit;
 
 namespace MediaStreamPool.Tests;
 
