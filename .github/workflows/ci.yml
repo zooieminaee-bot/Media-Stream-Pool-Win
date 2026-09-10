@@ -41,6 +41,13 @@ jobs:
           -p:DebugType=None
           -p:DebugSymbols=false
 
+      - name: Package Windows x64 application
+        if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:')
+        shell: pwsh
+        run: |
+          Compress-Archive -Path artifacts/MediaStreamPoolWin/* -DestinationPath artifacts/MediaStreamPoolWin-win-x64.zip -Force
+          Get-FileHash artifacts/MediaStreamPoolWin-win-x64.zip -Algorithm SHA256 | Format-List
+
       - name: Upload Windows x64 application
         uses: actions/upload-artifact@v6
         with:
@@ -48,3 +55,25 @@ jobs:
           path: artifacts/MediaStreamPoolWin/
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish GitHub Release
+        if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release:') && success()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = ($env:GITHUB_EVENT_PATH | Get-Content -Raw | ConvertFrom-Json).head_commit.message -replace '^release:\s*', ''
+          if ([string]::IsNullOrWhiteSpace($version)) { throw 'Release version is empty.' }
+          if ($version -notmatch '^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') { throw "Invalid release version: $version" }
+
+          $releaseExists = gh release view $version 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release $version already exists. Skipping creation."
+            exit 0
+          }
+
+          gh release create $version `
+            artifacts/MediaStreamPoolWin-win-x64.zip `
+            --target $env:GITHUB_SHA `
+            --title "MediaStreamPool Win $version" `
+            --notes "Windows x64 self-contained build of MediaStreamPool Win. Built from commit $env:GITHUB_SHA."
