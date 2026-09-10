@@ -68,4 +68,48 @@ public sealed class SqliteDecodedPayloadRepository(string connectionString) : ID
         command.Parameters.AddWithValue("$createdAt", payload.CreatedAt.ToString("O"));
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<DecodedPayload>> SearchAsync(string? query = null, CancellationToken cancellationToken = default)
+    {
+        await using var connection = new SqliteConnection(connectionString);
+        await connection.OpenAsync(cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT Id, ScanRunId, OriginalPayload, DecodedContent, ContentType, CreatedAt
+            FROM DecodedPayloads
+            WHERE $query = ''
+               OR OriginalPayload LIKE $pattern
+               OR DecodedContent LIKE $pattern
+               OR COALESCE(ContentType, '') LIKE $pattern
+            ORDER BY CreatedAt DESC;
+            """;
+        var normalized = query?.Trim() ?? string.Empty;
+        command.Parameters.AddWithValue("$query", normalized);
+        command.Parameters.AddWithValue("$pattern", $"%{normalized}%");
+
+        var result = new List<DecodedPayload>();
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            result.Add(new DecodedPayload
+            {
+                Id = Guid.Parse(reader.GetString(0)),
+                ScanRunId = reader.IsDBNull(1) ? null : Guid.Parse(reader.GetString(1)),
+                OriginalPayload = reader.GetString(2),
+                DecodedContent = reader.GetString(3),
+                ContentType = reader.IsDBNull(4) ? null : reader.GetString(4),
+                CreatedAt = DateTimeOffset.Parse(reader.GetString(5))
+            });
+        }
+        return result;
+    }
+
+    public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+    {
+        await using var connection = new SqliteConnection(connectionString);
+        await connection.OpenAsync(cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = "SELECT COUNT(*) FROM DecodedPayloads;";
+        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
+    }
 }
