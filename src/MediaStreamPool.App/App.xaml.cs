@@ -36,6 +36,7 @@ public partial class App : Application
         services.AddSingleton<MainWindow>();
         services.AddTransient<MainViewModel>();
         services.AddTransient<RecordsViewModel>();
+        services.AddTransient<DecodedPayloadsViewModel>();
         return services.BuildServiceProvider();
     }
 }
