@@ -4,12 +4,16 @@ namespace MediaStreamPool.Infrastructure.Database;
 
 public sealed class DatabaseInitializer(string connectionString)
 {
+    private const int InitialSchemaVersion = 1;
+
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
         await using var connection = new SqliteConnection(connectionString);
         await connection.OpenAsync(cancellationToken);
 
+        await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
         await using var command = connection.CreateCommand();
+        command.Transaction = (SqliteTransaction)transaction;
         command.CommandText = """
             PRAGMA foreign_keys = ON;
             PRAGMA journal_mode = WAL;
@@ -72,7 +76,10 @@ public sealed class DatabaseInitializer(string connectionString)
             CREATE INDEX IF NOT EXISTS IX_Records_DiscoveredAt ON Records(DiscoveredAt DESC);
             CREATE INDEX IF NOT EXISTS IX_ScanRuns_StartedAt ON ScanRuns(StartedAt DESC);
             CREATE INDEX IF NOT EXISTS IX_DecodedPayloads_CreatedAt ON DecodedPayloads(CreatedAt DESC);
+
+            INSERT OR IGNORE INTO SchemaMigrations (Version) VALUES (1);
             """;
         await command.ExecuteNonQueryAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
     }
 }
