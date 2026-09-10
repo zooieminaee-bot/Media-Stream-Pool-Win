@@ -6,30 +6,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
-        <NavigationView x:Name="Navigation" IsBackEnabled="False" SelectionChanged="Navigation_SelectionChanged">
+        <NavigationView x:Name="Navigation" IsBackEnabled="False" IsSettingsVisible="False" SelectionChanged="Navigation_SelectionChanged">
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Dashboard" Tag="Dashboard">
+                <NavigationViewItem Content="Dashboard" Tag="Dashboard" ToolTipService.ToolTip="Overview and local index statistics">
                     <NavigationViewItem.Icon><SymbolIcon Symbol="Home" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Streams" Tag="Streams">
+                <NavigationViewItem Content="Streams" Tag="Streams" ToolTipService.ToolTip="Discovered media stream endpoints">
                     <NavigationViewItem.Icon><SymbolIcon Symbol="Video" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="APIs" Tag="Apis">
+                <NavigationViewItem Content="APIs" Tag="Apis" ToolTipService.ToolTip="Discovered API endpoints">
                     <NavigationViewItem.Icon><SymbolIcon Symbol="Globe" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Decoded Payloads" Tag="Decoded">
+                <NavigationViewItem Content="Decoded Payloads" Tag="Decoded" ToolTipService.ToolTip="Decoded content saved by scans">
                     <NavigationViewItem.Icon><SymbolIcon Symbol="Document" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Scanner" Tag="Scanner">
+                <NavigationViewItem Content="Scanner" Tag="Scanner" ToolTipService.ToolTip="Analyze an authorized HTTP source">
                     <NavigationViewItem.Icon><SymbolIcon Symbol="Find" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
                 <NavigationViewItem Content="Settings" Tag="Settings">
                     <NavigationViewItem.Icon><SymbolIcon Symbol="Setting" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="About" Tag="About">
                     <NavigationViewItem.Icon><SymbolIcon Symbol="Help" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-            </NavigationView.MenuItems>
+            </NavigationView.FooterMenuItems>
             <Frame x:Name="ContentFrame" />
         </NavigationView>
     </Grid>
