@@ -1,0 +1,60 @@
+<Page
+    x:Class="MediaStreamPool.App.Pages.DecodedPayloadsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Padding="32" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Spacing="4">
+            <TextBlock Text="Decoded Payloads" Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock Text="Persisted decoded content from completed scans" Opacity="0.7" />
+        </StackPanel>
+        <Grid Grid.Row="1" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="SearchBox" PlaceholderText="Search payloads, content, or content type" TextChanged="SearchBox_TextChanged" />
+            <Button Grid.Column="1" Content="Refresh" Click="Refresh_Click" />
+        </Grid>
+        <Grid Grid.Row="2" ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" MinWidth="320" />
+                <ColumnDefinition Width="3*" MinWidth="420" />
+            </Grid.ColumnDefinitions>
+            <GridView Grid.Column="0" x:Name="PayloadList" SelectionChanged="PayloadList_SelectionChanged" IsItemClickEnabled="False">
+                <GridView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="12" Margin="0,0,0,8" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <StackPanel Spacing="5" Width="360">
+                                <TextBlock Text="{Binding ContentType}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding CreatedAt}" Opacity="0.65" />
+                                <TextBlock Text="{Binding DecodedContent}" MaxLines="3" TextWrapping="Wrap" Opacity="0.8" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+            <Border Grid.Column="1" Padding="16" CornerRadius="10" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                <Grid RowSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Decoded content" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock Grid.Row="1" x:Name="MetadataText" Opacity="0.65" TextWrapping="Wrap" />
+                    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <TextBox x:Name="ContentTextBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" FontFamily="Consolas" BorderThickness="0" Background="Transparent" />
+                    </ScrollViewer>
+                    <Button Grid.Row="3" Content="Copy content" HorizontalAlignment="Right" Click="Copy_Click" />
+                </Grid>
+            </Border>
+        </Grid>
+        <InfoBar Grid.Row="2" x:Name="StatusBar" IsOpen="False" VerticalAlignment="Bottom" Margin="0,0,0,8" />
+    </Grid>
+</Page>
